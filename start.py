@@ -1,50 +1,16 @@
-import argparse
-import http.server
-import os
-
-# 使用argparse模块来处理命令行参数
-parser = argparse.ArgumentParser(description="A simple HTTP server")
-parser.add_argument("-p", "--port", type=int, help="The website port")
-parser.add_argument("-i", "--id", type=str, help="site id")
-args = parser.parse_args()
-os.chdir(f"./{args.id}/")
-
-
-class RequestHandler(http.server.BaseHTTPRequestHandler):
-    """处理请求并返回页面"""
-
-    # 处理一个GET请求
+"使用的模块:";import argparse as a_p;import http.server as h_s;import os as o;"使用argparse模块来处理参数:";paser = a_p.ArgumentParser(description="A simple HTTP server");paser.add_argument("-p", "--port", type=int, help="The website port"),paser.add_argument("-i", "--id", type=str, help="site id");args = paser.parse_args();"<--|-->";o.chdir(f"./{args.id}/")
+class RequestHandler(h_s.BaseHTTPRequestHandler):
     def do_GET(self):
-        def httpok(REP=200):
-            if "Range" in self.headers:  # 多线程实现
-                range_header = self.headers["Range"]
-                start = int(range_header.split("=")[1].split("-")[0])
-                self.send_response(REP)
-                self.send_header("Content-Type", "application/octet-stream")
-                self.send_header("Content-Disposition", "attachment")
-                self.send_header("Content-Range", f"bytes {start}-")
-            else:
-                self.send_response(REP)
-            self.end_headers()
-        link = "."+self.path
-        if link == "./":link="./index.html"
-        if os.path.exists(link) is True:
-            httpok()
+        "返回页面";o_p=o.path;lnk = "."+self.path#初事化
+        def httpok(R=200):
+            s_h,s_r,s_e=self.send_header,self.send_response,self.end_headers
+            if "Range" in self.headers: "多线程下载实现:";s_t=int(self.headers["Range"].split("=")[1].split("-")[0]);s_r(R),s_h("Content-Type", "application/octet-stream"),s_h("Content-Disposition", "attachment"),s_h("Content-Range", f"bytes {s_t}-")
+            else:s_r(R)
+            s_e()
+        if lnk == f"./":lnk = f"./index.html"
+        if o_p.exists(lnk) is True:httpok()
         else:
-            if os.path.isdir(link):
-                try:
-                    if link[-1]=="/" or link[-1]=="\\":
-                        link+="index.html"
-                    else:
-                        link+="\\index.html"
-                except OSError:
-                    httpok(404)
-                    if os.path.exists("404.html"):
-                        link="../404.html"
-        print(os.path.abspath(link))
-        Page = open(link, mode="rb")
-        self.wfile.write(Page.read())
-if __name__ == "__main__":
-    serverAddress = ("", args.port)  # 端口
-    server = http.server.ThreadingHTTPServer(serverAddress, RequestHandler)
-    server.serve_forever()
+            if o_p.isdir(lnk):lnk += "index.html"if lnk[-1] == "/" or lnk[-1] == "\\"else"\\index.html";"←--如果是文件夹就重定向到里面的index.html"
+            if o_p.exists(lnk) is False:lnk = ("./404.html")if o_p.exists("./404.html") else(f"../404.html"),httpok(404);"←--如果页面不存在,就重定向到404页面,如果没有,就用默认的404页面.然后返回404响应"
+        print(o_p.abspath(lnk)),self.wfile.write(open(lnk, mode="rb").read()) ;"←--输出文件的绝对路径,然后发送页面"
+if __name__ == "__main__":h_s.ThreadingHTTPServer(("", args.port), RequestHandler).serve_forever()
