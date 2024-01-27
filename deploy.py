@@ -1,7 +1,6 @@
 import json,socket,requests;import time,os
 from urllib.parse import urlparse as parse;import xml.etree.ElementTree as et;import http.server as server
-#压行压上瘾了
-def _process_deploy_html(deploy_html: str, deployinfo):
+def _process_deploy_html(deploy_html: str, deployinfo):#压行压上瘾了
     deployhtml = et.parse(deploy_html)
     deployhtml_body = deployhtml.getroot()
     deploy_button = deployhtml_body.find("a")
@@ -14,11 +13,10 @@ def _process_deploy_html(deploy_html: str, deployinfo):
     return temp_html.read()
 def _process_mana_html(siteitem:list,template:open):
     "主页处理";mana_html=et.parse(template);item=mana_html.getroot()
-    class sitem:"模板页面元素查找";name,id,date,start=item.find("a"),item.find("id"),item.find("date"),item.find("button").find("a")
+    class sitem:"模板页面元素查找--→";name,id,date,start=item.find("a"),item.find("id"),item.find("date"),item.find("button").find("a")
     sitem.name.text=siteitem[1];sitem.id.text=siteitem[0];sitem.name.set("href",siteitem[2]);sitem.date.text=siteitem[3]
     sitem.start.set("href",f"http://localhost/start?{sitem.id.text}")
-    #缓存处理到managersite 没什么好看所以写一行了
-    temp=open(f"{sitem.id.text}.tmp","xb");mana_html.write(temp);temp=open(f"{sitem.id.text}.tmp","r");managersite=temp.read();temp_name=temp.name;temp=None;os.system(f"del {temp_name}")
+    "缓存处理到managersite 没什么好看所以写一行了--→";temp=open(f"{sitem.id.text}.tmp","xb");mana_html.write(temp);temp=open(f"{sitem.id.text}.tmp","r");managersite=temp.read();temp_name=temp.name;temp=None;os.system(f"del {temp_name}")
     print(managersite);return managersite
 def _site_start(id):
     "启动！"
