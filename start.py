@@ -4,7 +4,9 @@ class RequestHandler(h_s.BaseHTTPRequestHandler):
         "返回页面";o_p=o.path;lnk = "."+self.path#初事化
         def httpok(R=200):
             s_h,s_r,s_e=self.send_header,self.send_response,self.end_headers
-            if "Range" in self.headers: "多线程下载实现:";s_t=int(self.headers["Range"].split("=")[1].split("-")[0]);s_r(R),s_h("Content-Type", "application/octet-stream"),s_h("Content-Disposition", "attachment"),s_h("Content-Range", f"bytes {s_t}-")
+            if "Range" in self.headers: 
+                "多线程下载实现:";s_t=int(self.headers["Range"].split("=")[1].split("-")[0]);s_r(R)
+                for header in [("Content-Type", "application/octet-stream"),("Content-Disposition", "attachment"),("Content-Range", f"bytes {s_t}-")]:s_h(header)
             else:s_r(R)
             s_e()
         if lnk == f"./":lnk = f"./index.html"
